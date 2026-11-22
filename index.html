@@ -497,12 +497,22 @@ const START = [2026, 11, 23];
     if (!items.length && v.url) items = [{label: v.title || "영상", url: v.url}];
     return items.filter(it => it && /^https?:\/\//i.test(it.url || ""));
   }
+  // 유튜브 링크의 시작 시간(t=15, t=1m30s, start=90)을 플레이어에 넘기기
+  function ytStart(u){
+    try {
+      const x = new URL(u); const t = x.searchParams.get("t") || x.searchParams.get("start"); if (!t) return "";
+      let sec = 0;
+      if (/^\d+s?$/.test(t)) sec = parseInt(t, 10);
+      else { const m = t.match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/); if (m) sec = (+m[1]||0)*3600 + (+m[2]||0)*60 + (+m[3]||0); }
+      return sec > 0 ? `&start=${sec}` : "";
+    } catch(_){ return ""; }
+  }
   function playerFor(it){
     const url = it.url, yid = youtubeId(url);
     if (yid && /^[\w-]+$/.test(yid)){
       const w = document.createElement("div"); w.className = "yt";
       const f = document.createElement("iframe");
-      f.src = `https://www.youtube-nocookie.com/embed/${yid}?rel=0`;
+      f.src = `https://www.youtube-nocookie.com/embed/${yid}?rel=0` + ytStart(url);
       f.title = it.label || `누가복음 ${sel}장 영상`; f.loading = "lazy";
       f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
       f.allowFullscreen = true; f.referrerPolicy = "strict-origin-when-cross-origin";
@@ -562,7 +572,7 @@ const START = [2026, 11, 23];
     vDraft.forEach((it, k) => {
       const row = document.createElement("div"); row.className = "vrow";
       const num = document.createElement("div"); num.className = "num"; num.textContent = k + 1;
-      const lab = document.createElement("input"); lab.type = "text"; lab.maxLength = 20; lab.placeholder = `탭 이름 (예: 찬양)`; lab.value = it.label;
+      const lab = document.createElement("input"); lab.type = "text"; lab.maxLength = 40; lab.placeholder = `탭 이름 (예: 찬양)`; lab.value = it.label;
       lab.oninput = () => { vDraft[k].label = lab.value; };
       const url = document.createElement("input"); url.type = "url"; url.className = "url"; url.placeholder = "https://youtu.be/..."; url.value = it.url;
       url.oninput = () => { vDraft[k].url = url.value; };
