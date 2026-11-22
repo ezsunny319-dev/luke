@@ -133,6 +133,15 @@
   .skystat b{font-family:"Gowun Batang",serif;font-size:26px;color:var(--gold2);font-weight:700;margin-right:2px}
   .progress{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin:14px 0 4px}
   .progress i{display:block;height:100%;background:linear-gradient(90deg,#b88f3e,var(--gold2));border-radius:99px;transition:width .8s}
+  .legend{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:4px 0 10px}
+  .legend .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .legend .gold{background:#f7e2a8;box-shadow:0 0 8px #e9c779}
+  .legend .silver{background:#dbe6ff;box-shadow:0 0 8px #9fb4ff}
+  .legend b{color:#dbe6ff;font-weight:500}
+  .legend .btn{margin-left:auto}
+  .other{cursor:pointer}
+  .tw2{animation:tw2 5s ease-in-out infinite}
+  @keyframes tw2{0%,100%{opacity:.55}50%{opacity:1}}
   .detail .ch{color:var(--gold);font-size:13px;letter-spacing:.06em}
   .detail h3{font-family:"Gowun Batang",serif;margin:4px 0 10px;font-size:22px}
   .finale{text-align:center;font-family:"Gowun Batang",serif;font-size:18px;color:var(--gold2);padding:6px 0 2px}
@@ -162,7 +171,7 @@
     </div>
     <nav>
       <a href="#today" id="navToday" class="on">오늘의 말씀</a>
-      <a href="#sky" id="navSky">나의 밤하늘<span class="cnt" id="navCnt"></span></a>
+      <a href="#sky" id="navSky">밤하늘<span class="cnt" id="navCnt"></span></a>
     </nav>
   </header>
 
@@ -262,10 +271,15 @@
   <!-- SKY -->
   <section id="viewSky" hidden>
     <div class="skywrap" id="skywrap">
-      <div class="skystat"><b id="skyN">0</b> / 24 별</div>
+      <div class="skystat"><b id="skyN">0</b> / 24 나의 별</div>
       <svg id="sky" viewBox="0 0 1000 720" aria-label="나의 밤하늘"></svg>
     </div>
     <div class="progress"><i id="prog" style="width:0"></i></div>
+    <div class="legend">
+      <span><i class="dot gold"></i>나의 별</span>
+      <span id="legendOthers"><i class="dot silver"></i>함께 읽는 사람들의 별 <b id="othersN">0</b></span>
+      <button class="btn small ghost" id="toggleOthers"></button>
+    </div>
     <div id="finale" class="finale" hidden>스물네 장을 모두 읽었어요. 당신의 하늘이 별로 가득 찼습니다 ✦</div>
     <div class="card detail" id="detail" style="margin-top:14px"></div>
   </section>
@@ -339,7 +353,9 @@ const START = [2026, 11, 22];
   let mineLoaded = false;
   let T = todayN();
   let sel = Math.min(Math.max(T,1), TOTAL);
-  let editing = false, formDay = null, bornDay = null, skySel = null;
+  let editing = false, formDay = null, bornDay = null, skySel = null; // skySel: {kind:'mine',day} | {kind:'other',id}
+  let allRows = [];     // 모두의 묵상 (밤하늘용)
+  let showOthers = store.get("luke_showOthers") !== false;
 
   const canWriteDay = n => n <= T;
   const canView = n => n <= Math.max(T,1) || isAdmin;
@@ -367,7 +383,7 @@ const START = [2026, 11, 22];
     $("adminCard").hidden = !(h === "#admin" || isAdmin) || sky;
     if (sky) renderSky();
   }
-  window.addEventListener("hashchange", () => { route(); window.scrollTo({top:0}); });
+  window.addEventListener("hashchange", () => { route(); window.scrollTo({top:0}); if (location.hash === "#sky") loadAll(); });
 
   // ---------- 데이터 ----------
   async function loadVideos(){
@@ -379,6 +395,11 @@ const START = [2026, 11, 22];
     if (!sb) return;
     try { dayRows[d] = await rpc("get_day", { p_day: d }) || []; } catch(_){ dayRows[d] = dayRows[d] || []; }
     if (d === sel) renderList();
+  }
+  async function loadAll(){
+    if (!sb) return;
+    try { allRows = await rpc("get_all", {}) || []; } catch(_){ return; }
+    if (location.hash === "#sky") renderSky();
   }
   async function loadMine(){
     mineLoaded = false;
@@ -545,6 +566,7 @@ const START = [2026, 11, 22];
     defs.innerHTML = `
       <radialGradient id="glow"><stop offset="0" stop-color="#fff3c9" stop-opacity=".95"/><stop offset=".35" stop-color="#e9c779" stop-opacity=".45"/><stop offset="1" stop-color="#e9c779" stop-opacity="0"/></radialGradient>
       <radialGradient id="milk" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#8a8fd6" stop-opacity=".35"/><stop offset=".6" stop-color="#5a5fa8" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+      <radialGradient id="glow2"><stop offset="0" stop-color="#e6eeff" stop-opacity=".8"/><stop offset=".4" stop-color="#9fb4ff" stop-opacity=".3"/><stop offset="1" stop-color="#9fb4ff" stop-opacity="0"/></radialGradient>
       <linearGradient id="trail" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".9"/></linearGradient>`;
     svg.appendChild(defs);
     svg.appendChild(sv("ellipse",{class:"milky",cx:500,cy:365,rx:520,ry:170,fill:"url(#milk)",transform:"rotate(-18 500 365)"}));
@@ -565,21 +587,55 @@ const START = [2026, 11, 22];
     const lines = sv("g",{stroke:"#e9c779","stroke-opacity":.28,"stroke-width":1});
     for (let d=1; d<TOTAL; d++) if (lit.has(d) && lit.has(d+1)){ const a=POS[d-1], b=POS[d]; lines.appendChild(sv("line",{x1:a.x,y1:a.y,x2:b.x,y2:b.y})); }
     svg.appendChild(lines);
+    // 함께 읽는 사람들의 별 (내 별보다 먼저 그려서 아래에 깔리게)
+    const myName = auth ? auth.name.toLowerCase() : null;
+    const others = allRows.filter(r => r.day>=1 && r.day<=TOTAL && (!myName || r.name.toLowerCase() !== myName));
+    $("othersN").textContent = others.length;
+    $("legendOthers").hidden = !showOthers && others.length === 0;
+    if (showOthers){
+      const byDay = {};
+      others.forEach(r => (byDay[r.day] = byDay[r.day] || []).push(r));
+      const og = sv("g",{});
+      for (const d in byDay){
+        const p = POS[d-1];
+        byDay[d].forEach((r, k) => {
+          const ang = k*2.39996 + d*0.9, rad = 24 + 10*Math.sqrt(k+1);
+          const x = Math.min(985, Math.max(15, p.x + Math.cos(ang)*rad*1.25));
+          const y = Math.min(705, Math.max(15, p.y + Math.sin(ang)*rad));
+          const size = 4.2 + ((r.id*7)%5)*0.5;
+          const isSel = skySel && skySel.kind === "other" && skySel.id === r.id;
+          const g = sv("g",{class:"other",transform:`translate(${x.toFixed(1)} ${y.toFixed(1)})`,tabindex:0,role:"button","aria-label":`${r.name}의 ${r.day}장 묵상`});
+          g.appendChild(sv("circle",{r:size*2.4,fill:"url(#glow2)",opacity:.55}));
+          const core = sv("path",{class:"tw2",d:sparkle(size),fill:"#dbe6ff"});
+          core.style.animationDelay = ((r.id*0.53)%4).toFixed(2)+"s";
+          g.appendChild(core);
+          g.appendChild(sv("circle",{r:size*2.8,fill:"transparent"})); // 누르기 쉽게
+          if (isSel) g.appendChild(sv("circle",{r:size*2,fill:"none",stroke:"#dbe6ff","stroke-opacity":.8,"stroke-width":1}));
+          const pick = () => { skySel = {kind:"other", id:r.id}; renderSky(); };
+          g.addEventListener("click", pick);
+          g.addEventListener("keydown", e => { if (e.key === "Enter") pick(); });
+          og.appendChild(g);
+        });
+      }
+      svg.appendChild(og);
+    }
+
     for (let d=1; d<=TOTAL; d++){
       const p = POS[d-1];
       if (lit.has(d)){
         const size = 9 + (d%4)*1.6;
-        const g = sv("g",{class:"lit"+(d===bornDay?" born":""),transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`,tabindex:0,role:"button","aria-label":`${d}장 묵상`});
+        const g = sv("g",{class:"lit"+(d===bornDay?" born":""),transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`,tabindex:0,role:"button","aria-label":`나의 ${d}장 묵상`});
         g.appendChild(sv("circle",{class:"halo",r:size*2.6,fill:"url(#glow)",opacity:.6}));
         const core = sv("g",{class:"core"}); core.style.animationDelay = (d*0.37%3.5).toFixed(2)+"s";
         core.appendChild(sv("path",{d:sparkle(size),fill:"#fff6da"}));
         core.appendChild(sv("circle",{r:size*.22,fill:"#fff"}));
         g.appendChild(core);
-        if (skySel === d) g.appendChild(sv("circle",{r:size*1.9,fill:"none",stroke:"#f7e2a8","stroke-opacity":.7,"stroke-width":1}));
+        if (skySel && skySel.kind === "mine" && skySel.day === d) g.appendChild(sv("circle",{r:size*1.9,fill:"none",stroke:"#f7e2a8","stroke-opacity":.7,"stroke-width":1}));
         const lab = sv("text",{y:size*2.2+8,"text-anchor":"middle","font-size":11,fill:"#f3ead7","fill-opacity":.55,"font-family":"Noto Sans KR"});
         lab.textContent = d; g.appendChild(lab);
-        g.addEventListener("click", () => { skySel = d; renderSky(); });
-        g.addEventListener("keydown", e => { if (e.key === "Enter"){ skySel = d; renderSky(); } });
+        const pick = () => { skySel = {kind:"mine", day:d}; renderSky(); };
+        g.addEventListener("click", pick);
+        g.addEventListener("keydown", e => { if (e.key === "Enter") pick(); });
         svg.appendChild(g);
       } else {
         const g = sv("g",{transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`});
@@ -594,17 +650,27 @@ const START = [2026, 11, 22];
   function renderDetail(){
     const box = $("detail"); box.innerHTML = "";
     const empty = t => { const e = document.createElement("div"); e.className = "empty"; e.textContent = t; box.appendChild(e); };
-    if (!auth){ empty("‘오늘의 말씀’에서 이름과 비밀번호로 들어오면 나만의 밤하늘이 생겨요."); return; }
-    const e = skySel && mine[skySel];
-    if (!e){ empty(Object.keys(mine).length ? "빛나는 별을 누르면 그날의 묵상을 다시 볼 수 있어요." : "아직 하늘이 비어 있어요. 오늘의 말씀을 읽고 첫 묵상을 남기면 첫 번째 별이 떠요."); return; }
-    const c = document.createElement("div"); c.className = "ch"; c.textContent = `DAY ${skySel} · ${dateLabel(skySel)}`;
-    const h = document.createElement("h3"); h.textContent = `누가복음 ${skySel}장 — ${CH[skySel-1]}`;
+    let e = null, who = null, day = null;
+    if (skySel && skySel.kind === "mine"){ e = mine[skySel.day]; day = skySel.day; who = auth ? `${auth.name} (나)` : null; }
+    if (skySel && skySel.kind === "other"){ e = allRows.find(r => r.id === skySel.id); if (e){ day = e.day; who = e.name; } }
+    if (!e){
+      if (!auth) empty("금색 별은 나의 묵상, 은빛 별은 함께 읽는 사람들의 묵상이에요. ‘오늘의 말씀’에서 이름과 비밀번호로 들어오면 나만의 별자리가 생겨요.");
+      else empty(Object.keys(mine).length ? "별을 누르면 그날의 묵상을 볼 수 있어요. 금색은 나의 별, 은빛은 함께 읽는 사람들의 별이에요." : "아직 나의 별이 없어요. 오늘의 말씀을 읽고 첫 묵상을 남기면 금색 별이 떠요.");
+      return;
+    }
+    const c = document.createElement("div"); c.className = "ch"; c.textContent = `DAY ${day} · ${dateLabel(day)}`;
+    const h = document.createElement("h3"); h.textContent = `누가복음 ${day}장 — ${CH[day-1]}`;
+    const w = document.createElement("div"); w.className = "who-line"; w.textContent = `✦ ${who}`;
+    w.style.cssText = `font-size:14px;font-weight:700;margin-bottom:8px;color:${skySel.kind==="mine"?"var(--gold2)":"#dbe6ff"}`;
     const t = document.createElement("div"); t.style.whiteSpace = "pre-wrap"; t.textContent = e.body;
-    const m = document.createElement("div"); m.className = "hint"; m.style.marginTop = "10px"; m.textContent = `✦ ${fmtTime(e.created_at)}`;
-    box.append(c, h, t, m);
+    const m = document.createElement("div"); m.className = "hint"; m.style.marginTop = "10px"; m.textContent = fmtTime(e.created_at);
+    box.append(c, h, w, t, m);
   }
 
   // ---------- 동작 ----------
+  function syncToggle(){ $("toggleOthers").textContent = showOthers ? "내 별만 보기" : "모두의 별 보기"; }
+  $("toggleOthers").onclick = () => { showOthers = !showOthers; store.set("luke_showOthers", showOthers); syncToggle(); if (!showOthers && skySel && skySel.kind === "other") skySel = null; renderSky(); };
+  syncToggle();
   let toastTimer;
   function toast(html){ const t = $("toast"); t.innerHTML = html; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 3800); }
 
@@ -640,9 +706,9 @@ const START = [2026, 11, 22];
       if (!r.ok){ msg.className = "msg err"; msg.textContent = errMsg(r.error); if (r.error === "wrong_pin" || r.error === "no_user") logout(); return; }
       mine[day] = { day, body: text, created_at: (mine[day] && mine[day].created_at) || new Date().toISOString() };
       editing = false; formDay = null;
-      if (r.created){ bornDay = day; skySel = day; toast(`✦ 밤하늘에 별이 하나 떴어요 <a href="#sky">보러 가기</a>`); }
+      if (r.created){ bornDay = day; skySel = {kind:"mine", day}; toast(`✦ 밤하늘에 별이 하나 떴어요 <a href="#sky">보러 가기</a>`); }
       else toast("묵상을 고쳐 저장했어요");
-      renderAll(); loadDay(day);
+      renderAll(); loadDay(day); loadAll();
     } catch(e){ msg.className = "msg err"; msg.textContent = errMsg(); }
     finally { saving = false; $("medSave").disabled = false; }
   };
@@ -653,7 +719,7 @@ const START = [2026, 11, 22];
     try {
       const r = await rpc("delete_meditation", { p_name: auth.name, p_pin: auth.pin, p_day: day });
       if (!r.ok){ toast(errMsg(r.error)); return; }
-      delete mine[day]; editing = false; formDay = null; toast("묵상을 지웠어요"); renderAll(); loadDay(day);
+      delete mine[day]; editing = false; formDay = null; toast("묵상을 지웠어요"); renderAll(); loadDay(day); loadAll();
     } catch(_){ toast(errMsg()); }
   });
 
@@ -681,7 +747,7 @@ const START = [2026, 11, 22];
     } catch(_){ m.className = "msg err"; m.textContent = errMsg(); }
   };
   async function adminDelete(id){
-    try { const r = await rpc("admin_delete_meditation", { p_admin: adminPw, p_id: id }); if (!r.ok){ toast(errMsg(r.error)); return; } toast("삭제했어요"); loadDay(sel); }
+    try { const r = await rpc("admin_delete_meditation", { p_admin: adminPw, p_id: id }); if (!r.ok){ toast(errMsg(r.error)); return; } toast("삭제했어요"); loadDay(sel); loadAll(); }
     catch(_){ toast(errMsg()); }
   }
   $("vSave").onclick = async () => {
@@ -705,7 +771,7 @@ const START = [2026, 11, 22];
   // 자정(한국 시간)이 지나면 새 장으로, 다시 화면에 돌아오면 새 묵상 불러오기
   setInterval(() => { const n = todayN(); if (n !== T){ const wasToday = sel === Math.min(Math.max(T,1),TOTAL); T = n; if (wasToday) sel = Math.min(Math.max(T,1),TOTAL); renderAll(); loadDay(sel); loadVideos(); } }, 60000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden && sb){ loadDay(sel); loadVideos(); } });
-  setInterval(() => { if (!document.hidden && sb) loadDay(sel); }, 60000);
+  setInterval(() => { if (!document.hidden && sb){ loadDay(sel); if (location.hash === "#sky") loadAll(); } }, 60000);
 
   // ---------- 시작 ----------
   renderAll(); route();
@@ -713,7 +779,7 @@ const START = [2026, 11, 22];
   else {
     (async () => {
       if (adminPw) await enterAdmin(adminPw);
-      loadVideos(); loadDay(sel); loadMine();
+      loadVideos(); loadDay(sel); loadMine(); loadAll();
     })();
   }
 })();
