@@ -152,6 +152,8 @@
   .note{font-size:13px;color:var(--ink3);text-align:center;margin-top:28px}
   [hidden]{display:none!important}
 
+  .hero-links{display:flex;gap:8px;flex-wrap:wrap}
+  @media (max-width:480px){.hero-links .btn{font-size:13px;padding:8px 12px;gap:5px}.hero-links{gap:6px}}
   .hero-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .scripture .word-head{display:flex;align-items:baseline;gap:8px;margin:22px 0 14px;padding-top:20px;border-top:1px solid var(--line);font-family:"Gowun Batang",serif;font-size:17px}
   .scripture .word-head .muted{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:var(--ink3)}
@@ -233,7 +235,7 @@
       <h2 id="heroTitle">누가복음 1장</h2>
       <p class="sub serif" id="heroSub"></p>
       <div class="hero-actions">
-        <a class="btn" id="readLink" href="#" target="_blank" rel="noopener">📖 개역개정으로 보기</a>
+        <span class="hero-links"><a class="btn" id="readLink" href="#" target="_blank" rel="noopener">📖 개역개정으로 보기</a><a class="btn" href="http://www.biblemap.or.kr/biblemap3D.html" target="_blank" rel="noopener">🗺️ 성서 지도 보기</a></span>
         <span class="fs"><button class="btn small ghost" id="fsDown" aria-label="글자 작게">가−</button><button class="btn small ghost" id="fsUp" aria-label="글자 크게">가+</button></span>
       </div>
       <div class="word-head"><span>오늘의 말씀</span><span class="muted">우리말성경</span></div>
