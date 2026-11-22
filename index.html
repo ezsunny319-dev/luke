@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>누가복음 24장 묵상</title>
+<meta name="description" content="하루 한 장 누가복음을 읽고 묵상을 나누면, 나의 밤하늘에 별이 하나씩 떠요.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -12 24 24'%3E%3Cpath d='M0,-11 Q1.4,-1.4 11,0 Q1.4,1.4 0,11 Q-1.4,1.4 -11,0 Q-1.4,-1.4 0,-11Z' fill='%23e9c779'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+
+  :root{
+    --night:#0a0f24; --night2:#141a3a; --card:rgba(255,255,255,.045); --line:rgba(243,234,215,.12);
+    --ink:#f3ead7; --ink2:rgba(243,234,215,.68); --ink3:rgba(243,234,215,.42);
+    --gold:#e9c779; --gold2:#f7e2a8; --rose:#e6a3a3;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Noto Sans KR",system-ui,sans-serif; color:var(--ink); line-height:1.65;
+    background:radial-gradient(1200px 700px at 80% -10%, #26305e 0%, transparent 60%),
+               radial-gradient(900px 600px at -10% 10%, #1b2350 0%, transparent 55%),
+               linear-gradient(180deg,var(--night2),var(--night) 60%);
+    background-attachment:fixed; min-height:100vh;
+  }
+  .serif{font-family:"Gowun Batang",serif}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 18px 80px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .mark{width:30px;height:30px}
+  .brand h1{font-family:"Gowun Batang",serif;font-size:19px;margin:0;letter-spacing:.02em}
+  .brand small{display:block;color:var(--ink3);font-size:12px;letter-spacing:.06em}
+  nav{display:flex;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--line);padding:4px;border-radius:999px}
+  nav a{color:var(--ink2);text-decoration:none;font-size:14px;padding:7px 14px;border-radius:999px;white-space:nowrap}
+  nav a.on{background:var(--ink);color:var(--night)}
+  nav a .cnt{font-size:12px;opacity:.75;margin-left:4px}
+
+  .banner{border:1px solid rgba(233,199,121,.35);background:rgba(233,199,121,.08);color:var(--gold2);
+    border-radius:14px;padding:12px 16px;font-size:14px;margin-bottom:16px}
+  .banner b{color:var(--gold)}
+
+  /* day strip */
+  .strip{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin:4px 0 18px}
+  .strip button{aspect-ratio:1;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink3);
+    font:500 12px "Noto Sans KR",sans-serif;cursor:pointer;padding:0;position:relative;transition:.2s}
+  .strip button:hover:not(:disabled){border-color:var(--ink2);color:var(--ink)}
+  .strip button.done{background:radial-gradient(circle at 50% 45%,#fff6d6 0%,var(--gold) 55%,#b88f3e 100%);color:#3a2b0b;border-color:transparent;box-shadow:0 0 12px rgba(233,199,121,.55)}
+  .strip button.today::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--gold);opacity:.8}
+  .strip button.sel{outline:2px solid var(--ink);outline-offset:2px}
+  .strip button:disabled{opacity:.35;cursor:default}
+  @media (max-width:520px){.strip{grid-template-columns:repeat(8,1fr)}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px;backdrop-filter:blur(4px)}
+  .hero .date{color:var(--gold);font-size:14px;letter-spacing:.08em}
+  .hero h2{font-family:"Gowun Batang",serif;font-size:40px;margin:6px 0 2px;line-height:1.2}
+  .hero .sub{color:var(--ink2);font-size:16px;margin:0 0 14px}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);margin-left:8px;vertical-align:middle}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);
+    font:500 14px "Noto Sans KR",sans-serif;padding:9px 16px;border-radius:999px;cursor:pointer;text-decoration:none}
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn.gold{background:var(--gold);color:#2b1f05;border-color:transparent;font-weight:700}
+  .btn.gold:hover{background:var(--gold2)}
+  .btn.ghost{background:transparent}
+  .btn.small{font-size:12px;padding:5px 11px}
+  .btn:disabled{opacity:.45;cursor:default}
+
+  .sec-title{font-family:"Gowun Batang",serif;font-size:18px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .sec-title .muted{font-family:"Noto Sans KR";font-size:13px;color:var(--ink3);font-weight:400}
+
+  .video video{width:100%;border-radius:14px;background:#000;display:block}
+  .vlink{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,rgba(233,199,121,.14),rgba(255,255,255,.03));
+    border:1px solid rgba(233,199,121,.25);color:var(--ink);text-decoration:none}
+  .vlink:hover{background:linear-gradient(135deg,rgba(233,199,121,.22),rgba(255,255,255,.05))}
+  .vlink .play{flex:none;width:48px;height:48px;border-radius:50%;background:var(--gold);display:grid;place-items:center}
+  .vlink .play svg{width:18px;height:18px;margin-left:3px}
+  .vlink .t{font-weight:700}
+  .vlink .u{font-size:12px;color:var(--ink3);word-break:break-all}
+  .empty{color:var(--ink3);font-size:14px;padding:18px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+  .editor{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);display:none}
+  .editor.open{display:block}
+  .editor label{display:block;font-size:12px;color:var(--ink3);margin:8px 0 4px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+  input[type=text],input[type=url],textarea{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--line);color:var(--ink);
+    border-radius:12px;padding:11px 13px;font:15px/1.6 "Noto Sans KR",sans-serif;outline:none}
+  input:focus,textarea:focus{border-color:rgba(233,199,121,.6)}
+  textarea{min-height:140px;resize:vertical}
+  ::placeholder{color:var(--ink3)}
+  .hint{font-size:12px;color:var(--ink3)}
+  .msg{font-size:13px;margin-top:8px;min-height:1em}
+  .msg.err{color:var(--rose)} .msg.ok{color:var(--gold2)}
+
+  .mine{border-left:3px solid var(--gold);padding:4px 0 4px 14px;margin-bottom:12px}
+  .mine .txt,.item .txt{white-space:pre-wrap;word-break:break-word}
+  .mine .meta{font-size:12px;color:var(--ink3);margin-top:6px}
+
+  .list{display:flex;flex-direction:column;gap:12px}
+  .item{display:flex;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+  .item img{width:34px;height:34px;border-radius:50%;flex:none;object-fit:cover}
+  .item .who{font-size:14px;font-weight:700}
+  .item .who .when{font-weight:400;color:var(--ink3);font-size:12px;margin-left:6px}
+  .item .body{flex:1;min-width:0}
+  .item .del{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:12px;padding:0;margin-left:8px}
+  .item .del:hover{color:var(--rose)}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);opacity:0;background:var(--ink);color:var(--night);
+    padding:12px 18px;border-radius:999px;font-size:14px;font-weight:500;transition:.35s;z-index:20;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+  .toast a{color:#6b4c0c;font-weight:700}
+
+  /* sky */
+  .skywrap{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--line);
+    background:radial-gradient(ellipse at 50% 120%, #22295a 0%, #0c1230 55%, #050817 100%)}
+  .skywrap svg{display:block;width:100%;height:auto}
+  .tw{animation:tw 4s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+  .lit{cursor:pointer}
+  .lit .core{transform-box:fill-box;transform-origin:center;animation:pulse 3.5s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .lit.born .core,.lit.born .halo{animation:born 1.8s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes born{0%{transform:scale(0);opacity:0}60%{transform:scale(1.6);opacity:1}100%{transform:scale(1);opacity:1}}
+  .halo{transform-box:fill-box;transform-origin:center}
+  .slot{cursor:default}
+  .shoot{opacity:0}
+  .complete .shoot{animation:shoot 7s linear infinite}
+  @keyframes shoot{0%{opacity:0;transform:translate(0,0)}3%{opacity:1}12%{opacity:0;transform:translate(-380px,220px)}100%{opacity:0;transform:translate(-380px,220px)}}
+  .milky{opacity:.35;transition:opacity 2s}
+  .complete .milky{opacity:.8}
+  .skystat{position:absolute;left:18px;top:14px;font-size:13px;color:var(--ink2)}
+  .skystat b{font-family:"Gowun Batang",serif;font-size:26px;color:var(--gold2);font-weight:700;margin-right:2px}
+  .progress{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin:14px 0 4px}
+  .progress i{display:block;height:100%;background:linear-gradient(90deg,#b88f3e,var(--gold2));border-radius:99px;transition:width .8s}
+  .detail .ch{color:var(--gold);font-size:13px;letter-spacing:.06em}
+  .detail h3{font-family:"Gowun Batang",serif;margin:4px 0 10px;font-size:22px}
+  .finale{text-align:center;font-family:"Gowun Batang",serif;font-size:18px;color:var(--gold2);padding:6px 0 2px}
+
+  .note{font-size:13px;color:var(--ink3);text-align:center;margin-top:28px}
+  [hidden]{display:none!important}
+
+  .yt{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}
+  .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .who-bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink3);margin-bottom:10px}
+  .who-bar button{background:none;border:none;color:var(--ink3);text-decoration:underline;cursor:pointer;font-size:12px}
+  .login-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+  @media (max-width:520px){.login-grid{grid-template-columns:1fr 1fr}.login-grid .btn{grid-column:1/-1;justify-content:center}}
+  input[type=password]{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:11px 13px;font:15px/1.6 "Noto Sans KR",sans-serif;outline:none}
+  .admin{border-color:rgba(230,163,163,.4)}
+  .admin .sec-title{color:var(--rose)}
+  footer{text-align:center;margin-top:28px;font-size:12px;color:var(--ink3)}
+  footer a{color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg class="mark" viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0,-11 Q1.4,-1.4 11,0 Q1.4,1.4 0,11 Q-1.4,1.4 -11,0 Q-1.4,-1.4 0,-11Z" fill="#e9c779"/></svg>
+      <div><h1>누가복음 24장 묵상</h1><small>하루 한 장, 밤하늘에 별 하나</small></div>
+    </div>
+    <nav>
+      <a href="#today" id="navToday" class="on">오늘의 말씀</a>
+      <a href="#sky" id="navSky">나의 밤하늘<span class="cnt" id="navCnt"></span></a>
+    </nav>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <!-- ADMIN -->
+  <section id="adminCard" class="card admin" hidden>
+    <h3 class="sec-title">관리자</h3>
+    <div id="adminLogin">
+      <div class="row">
+        <input type="password" id="adminPw" placeholder="관리자 비밀번호" style="flex:1;min-width:180px">
+        <button class="btn small" id="adminIn">확인</button>
+      </div>
+    </div>
+    <div id="adminTools" hidden>
+      <p class="hint" style="margin:0 0 10px">관리자 모드예요. 아래 각 날짜의 ‘영상 설정’에서 영상을 넣고, 묵상 옆 ‘삭제’로 글을 정리할 수 있어요.</p>
+      <label class="hint">참여자 비밀번호 초기화</label>
+      <div class="row" style="margin-top:4px">
+        <input type="text" id="rsName" placeholder="이름" style="flex:1;min-width:110px">
+        <input type="password" id="rsPin" inputmode="numeric" placeholder="새 비밀번호(숫자)" style="flex:1;min-width:130px">
+        <button class="btn small" id="rsGo">바꾸기</button>
+      </div>
+      <div class="msg" id="adminMsg"></div>
+      <button class="btn ghost small" id="adminOut" style="margin-top:6px">관리자 모드 끄기</button>
+    </div>
+  </section>
+
+  <!-- TODAY -->
+  <section id="viewToday">
+    <div class="strip" id="strip"></div>
+
+    <div class="card hero">
+      <div class="date" id="heroDate"></div>
+      <h2 id="heroTitle">누가복음 1장</h2>
+      <p class="sub serif" id="heroSub"></p>
+      <a class="btn" id="readLink" href="#" target="_blank" rel="noopener">📖 본문 읽기 <span class="hint">(대한성서공회 · 개역개정)</span></a>
+    </div>
+
+    <div class="card video">
+      <h3 class="sec-title">오늘의 영상 <span class="muted" id="videoEditToggleWrap"></span></h3>
+      <div id="videoBox"></div>
+      <div class="editor" id="videoEditor">
+        <label>영상 제목 (선택)</label>
+        <input type="text" id="vTitle" placeholder="예: 1장 함께 읽기">
+        <label>영상 링크 (유튜브 링크는 페이지 안에서 바로 재생돼요)</label>
+        <input type="url" id="vUrl" placeholder="https://youtu.be/...">
+        <div class="row" style="margin-top:12px">
+          <button class="btn gold small" id="vSave">이 날의 영상 저장</button>
+          <button class="btn ghost small" id="vClear">영상 지우기</button>
+        </div>
+        <div class="msg" id="vMsg"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="sec-title">나의 묵상</h3>
+
+      <div id="loginBox" hidden>
+        <p class="hint" style="margin:0 0 10px">이름과 숫자 비밀번호(4~8자리)를 넣어 주세요. 처음이면 바로 등록되고, 다음부터 같은 이름·비밀번호로 들어오면 내 밤하늘이 이어져요.</p>
+        <div class="login-grid">
+          <input type="text" id="lgName" maxlength="20" placeholder="이름" autocomplete="nickname">
+          <input type="password" id="lgPin" maxlength="8" inputmode="numeric" placeholder="비밀번호 (숫자)" autocomplete="current-password">
+          <button class="btn gold" id="lgGo">들어가기</button>
+        </div>
+        <div class="msg" id="lgMsg"></div>
+      </div>
+
+      <div id="meBox" hidden>
+        <div class="who-bar"><span id="meName"></span><button id="logout">다른 이름으로 들어가기</button></div>
+        <div id="mineView" hidden>
+          <div class="mine"><div class="txt" id="mineTxt"></div><div class="meta" id="mineMeta"></div></div>
+          <div class="row">
+            <button class="btn small" id="mineEdit">고쳐 쓰기</button>
+            <button class="btn small ghost" id="mineDel">지우기</button>
+            <a class="btn small ghost" href="#sky">✦ 내 밤하늘 보기</a>
+          </div>
+        </div>
+        <div id="mineForm">
+          <textarea id="medText" maxlength="2000" placeholder="오늘 말씀에서 마음에 남은 한 구절, 깨달음, 기도를 적어 보세요."></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn gold" id="medSave">✦ 묵상 남기고 별 띄우기</button>
+            <button class="btn ghost small" id="medCancel" hidden>취소</button>
+          </div>
+          <div class="msg" id="medMsg"></div>
+        </div>
+      </div>
+
+      <div id="mineLocked" class="empty" hidden></div>
+    </div>
+
+    <div class="card">
+      <h3 class="sec-title">함께 나눈 묵상 <span class="muted" id="listCount"></span></h3>
+      <div class="list" id="list"></div>
+    </div>
+  </section>
+
+  <!-- SKY -->
+  <section id="viewSky" hidden>
+    <div class="skywrap" id="skywrap">
+      <div class="skystat"><b id="skyN">0</b> / 24 별</div>
+      <svg id="sky" viewBox="0 0 1000 720" aria-label="나의 밤하늘"></svg>
+    </div>
+    <div class="progress"><i id="prog" style="width:0"></i></div>
+    <div id="finale" class="finale" hidden>스물네 장을 모두 읽었어요. 당신의 하늘이 별로 가득 찼습니다 ✦</div>
+    <div class="card detail" id="detail" style="margin-top:14px"></div>
+  </section>
+
+  <p class="note" id="status"></p>
+  <footer>성경 본문은 대한성서공회 웹사이트로 연결돼요 · <a href="#admin">관리자</a></footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   ① Supabase 연결 정보 — 여기 두 줄만 바꾸면 돼요.
+   Supabase 대시보드 → Project Settings → API (또는 상단 Connect 버튼)
+   - Project URL               → SUPABASE_URL
+   - anon / publishable key    → SUPABASE_KEY   (공개돼도 괜찮은 키예요)
+   ⚠️ service_role / secret 키는 절대 넣지 마세요.
+   ===================================================================== */
+const SUPABASE_URL = "https://ddcgsbodcplpjfwswvlh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-nk-6HoHB2Mi4t85PDbenA_r83X2NsJ";
+
+/* ② 읽기 일정 — 1장은 시작일, 2장부터는 평일(월~금)마다 한 장.
+   바꾸면 supabase.sql 의 opened_count() 날짜도 같이 바꿔 주세요. */
+const START = [2026, 11, 22];
+
+(() => {
+  const TOTAL = 24;
+  const START_UTC = Date.UTC(START[0], START[1]-1, START[2]);
+  const CH = [
+    "사가랴와 마리아에게 임한 약속","예수의 탄생과 성전의 소년 예수","세례 요한의 외침과 예수의 세례",
+    "광야의 시험과 나사렛 회당","깊은 데로 가서 그물을 내리라","안식일의 주인, 평지에서의 가르침",
+    "백부장의 믿음과 용서받은 여인","씨 뿌리는 비유와 야이로의 딸","오병이어와 변화산",
+    "칠십 인의 파송과 선한 사마리아인","주님이 가르치신 기도","어리석은 부자와 깨어 있는 종",
+    "회개의 부르심과 겨자씨 비유","큰 잔치 비유와 제자의 길","잃은 양, 잃은 동전, 돌아온 아들",
+    "불의한 청지기와 부자와 나사로","열 명의 나병환자와 하나님 나라","끈질긴 과부, 바리새인과 세리",
+    "삭개오와 예루살렘 입성","권위에 대한 질문과 포도원 농부","과부의 헌금과 마지막 때",
+    "마지막 만찬과 겟세마네","십자가와 낙원의 약속","부활하신 주님, 엠마오로 가는 길"
+  ];
+  const WD = ["일","월","화","수","목","금","토"];
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k, s){ try { return JSON.parse((s?sessionStorage:localStorage).getItem(k)); } catch(_){ return null; } },
+    set(k, v, s){ try { (s?sessionStorage:localStorage).setItem(k, JSON.stringify(v)); } catch(_){} },
+    del(k, s){ try { (s?sessionStorage:localStorage).removeItem(k); } catch(_){} }
+  };
+
+  // ---------- 날짜 ----------
+  const DATES = [START_UTC];
+  for (let t = START_UTC + 864e5; DATES.length < TOTAL; t += 864e5){
+    const wd = new Date(t).getUTCDay(); if (wd !== 0 && wd !== 6) DATES.push(t);
+  }
+  const LAST_UTC = DATES[TOTAL-1];
+  function kstTodayUTC(){
+    const p = new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).split("-").map(Number);
+    return Date.UTC(p[0], p[1]-1, p[2]);
+  }
+  const todayN = () => { const k = kstTodayUTC(); return DATES.filter(t => t <= k).length; };
+  const isTodayChapter = n => DATES[n-1] === kstTodayUTC();
+  const dateLabel = n => { const d = new Date(DATES[n-1]); return `${d.getUTCFullYear()}년 ${d.getUTCMonth()+1}월 ${d.getUTCDate()}일 (${WD[d.getUTCDay()]})`; };
+  const shortDate = n => { const d = new Date(DATES[n-1]); return `${d.getUTCMonth()+1}/${d.getUTCDate()}(${WD[d.getUTCDay()]})`; };
+  const fmtTime = ts => ts ? new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"numeric",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(ts)) : "";
+
+  // ---------- 상태 ----------
+  const configured = !/YOUR-/.test(SUPABASE_URL + SUPABASE_KEY);
+  const sb = configured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+  let auth = store.get("luke_auth");            // {name, pin}
+  let adminPw = store.get("luke_admin", true);  // 탭을 닫으면 사라져요
+  let isAdmin = false;
+  let mine = {};        // day -> {body, created_at}
+  let dayRows = {};     // day -> [{id,name,body,created_at}]
+  let videos = {};      // day -> {title,url}
+  let mineLoaded = false;
+  let T = todayN();
+  let sel = Math.min(Math.max(T,1), TOTAL);
+  let editing = false, formDay = null, bornDay = null, skySel = null;
+
+  const canWriteDay = n => n <= T;
+  const canView = n => n <= Math.max(T,1) || isAdmin;
+  const ERR = {
+    bad_name:"이름을 1~20자로 넣어 주세요.", bad_pin:"비밀번호는 숫자 4~8자리예요.",
+    wrong_pin:"비밀번호가 맞지 않아요.", locked:"비밀번호를 여러 번 틀려서 10분 동안 잠겼어요.",
+    no_user:"등록된 이름이 아니에요. 다시 들어가 주세요.", not_open:"아직 열리지 않은 장이에요.",
+    bad_body:"묵상은 1~2000자로 적어 주세요.", not_admin:"관리자 비밀번호가 맞지 않아요.", bad_url:"https:// 로 시작하는 링크를 넣어 주세요."
+  };
+  const errMsg = e => (e && ERR[e]) || "잠시 연결이 원활하지 않아요. 다시 시도해 주세요.";
+
+  async function rpc(fn, args){
+    if (!sb) throw new Error("not_configured");
+    const { data, error } = await sb.rpc(fn, args);
+    if (error) throw error;
+    return data;
+  }
+
+  // ---------- 라우팅 ----------
+  function route(){
+    const h = location.hash;
+    const sky = h === "#sky";
+    $("viewToday").hidden = sky; $("viewSky").hidden = !sky;
+    $("navToday").classList.toggle("on", !sky); $("navSky").classList.toggle("on", sky);
+    $("adminCard").hidden = !(h === "#admin" || isAdmin) || sky;
+    if (sky) renderSky();
+  }
+  window.addEventListener("hashchange", () => { route(); window.scrollTo({top:0}); });
+
+  // ---------- 데이터 ----------
+  async function loadVideos(){
+    if (!sb) return;
+    const { data, error } = await sb.from("videos").select("day,title,url");
+    if (!error){ videos = {}; (data||[]).forEach(v => videos[v.day] = v); renderVideo(); }
+  }
+  async function loadDay(d){
+    if (!sb) return;
+    try { dayRows[d] = await rpc("get_day", { p_day: d }) || []; } catch(_){ dayRows[d] = dayRows[d] || []; }
+    if (d === sel) renderList();
+  }
+  async function loadMine(){
+    mineLoaded = false;
+    if (!sb || !auth){ mine = {}; mineLoaded = true; renderAll(); return; }
+    try {
+      const r = await rpc("my_meditations", { p_name: auth.name, p_pin: auth.pin });
+      if (!r.ok){ if (r.error === "wrong_pin" || r.error === "no_user"){ logout(); $("lgMsg").className="msg err"; $("lgMsg").textContent = errMsg(r.error); } mine = {}; }
+      else { mine = {}; r.items.forEach(it => mine[it.day] = it); auth.name = r.name; }
+    } catch(_){}
+    mineLoaded = true; renderAll();
+  }
+  function logout(){ auth = null; store.del("luke_auth"); mine = {}; editing = false; formDay = null; renderAll(); }
+
+  // ---------- 그리기: 오늘 ----------
+  function renderBanner(){
+    const b = $("banner");
+    if (!configured){ b.hidden = false; b.innerHTML = `<b>설정이 필요해요.</b> index.html 위쪽의 SUPABASE_URL과 SUPABASE_KEY를 내 Supabase 프로젝트 값으로 바꿔 주세요.`; return; }
+    if (T < 1){ b.hidden = false; b.innerHTML = `<b>${shortDate(1)}</b>에 1장으로 시작해요. 하루 한 장씩 함께 읽어요.`; }
+    else if (kstTodayUTC() > LAST_UTC){ b.hidden = false; b.innerHTML = `누가복음 24장 여정이 끝났어요. 지난 장을 다시 열어 묵상을 이어 쓸 수 있어요.`; }
+    else if (!isTodayChapter(T)){ b.hidden = false; b.innerHTML = `오늘은 주말이라 쉬어 가요. <b>월요일 ${shortDate(T+1)}</b>에 ${T+1}장이 열려요. 못 다 쓴 묵상이 있다면 지금 채워 보세요.`; }
+    else b.hidden = true;
+  }
+  function renderStrip(){
+    const s = $("strip"); s.innerHTML = "";
+    for (let n=1;n<=TOTAL;n++){
+      const b = document.createElement("button");
+      b.textContent = n; b.title = `${shortDate(n)} · 누가복음 ${n}장`;
+      if (mine[n]) b.classList.add("done");
+      if (n === T && isTodayChapter(n)) b.classList.add("today");
+      if (n === sel) b.classList.add("sel");
+      b.disabled = !canView(n);
+      b.onclick = () => { sel = n; editing = false; renderToday(); loadDay(n); };
+      s.appendChild(b);
+    }
+  }
+  function renderHero(){
+    $("heroDate").textContent = `DAY ${sel} · ${dateLabel(sel)}`;
+    const h = $("heroTitle"); h.textContent = `누가복음 ${sel}장`;
+    const tag = (sel === T && isTodayChapter(sel)) ? "오늘" : (sel > T ? "미리보기" : "");
+    if (tag){ const t=document.createElement("span"); t.className="tag"; t.textContent=tag; h.append(t); }
+    $("heroSub").textContent = CH[sel-1];
+    $("readLink").href = `https://www.bskorea.or.kr/bible/korbibReadpage.php?version=GAE&book=luk&chap=${sel}`;
+  }
+  function youtubeId(u){
+    try {
+      const x = new URL(u), h = x.hostname.replace(/^www\.|^m\./, "");
+      if (h === "youtu.be") return x.pathname.slice(1).split("/")[0];
+      if (h.endsWith("youtube.com") || h === "youtube-nocookie.com"){
+        if (x.searchParams.get("v")) return x.searchParams.get("v");
+        const m = x.pathname.match(/\/(embed|shorts|live|v)\/([\w-]{6,})/); if (m) return m[2];
+      }
+    } catch(_){}
+    return null;
+  }
+  function renderVideo(){
+    const box = $("videoBox"); box.innerHTML = "";
+    const v = videos[sel];
+    const url = v && /^https?:\/\//i.test(v.url) ? v.url : null;
+    const yid = url && youtubeId(url);
+    if (yid && /^[\w-]+$/.test(yid)){
+      const w = document.createElement("div"); w.className = "yt";
+      const f = document.createElement("iframe");
+      f.src = `https://www.youtube-nocookie.com/embed/${yid}?rel=0`;
+      f.title = (v.title || `누가복음 ${sel}장 영상`); f.loading = "lazy";
+      f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      f.allowFullscreen = true; f.referrerPolicy = "strict-origin-when-cross-origin";
+      w.appendChild(f); box.appendChild(w);
+      if (v.title){ const t=document.createElement("div"); t.className="hint"; t.style.marginTop="8px"; t.textContent=v.title; box.appendChild(t); }
+    } else if (url && /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)){
+      const el = document.createElement("video"); el.controls = true; el.preload = "metadata"; el.playsInline = true; el.src = url;
+      box.appendChild(el);
+    } else if (url){
+      const a = document.createElement("a"); a.className = "vlink"; a.href = url; a.target = "_blank"; a.rel = "noopener";
+      a.innerHTML = `<span class="play"><svg viewBox="0 0 10 12"><path d="M0 0L10 6L0 12Z" fill="#2b1f05"/></svg></span><span><div class="t"></div><div class="u"></div></span>`;
+      a.querySelector(".t").textContent = v.title || "오늘의 영상 보기"; a.querySelector(".u").textContent = url;
+      box.appendChild(a);
+    } else {
+      const e = document.createElement("div"); e.className = "empty";
+      e.textContent = sel > T ? "이 날의 영상은 그날 함께 열려요." : "오늘의 영상이 곧 올라와요.";
+      box.appendChild(e);
+    }
+    const wrap = $("videoEditToggleWrap"); wrap.innerHTML = "";
+    if (isAdmin){
+      const b = document.createElement("button"); b.className = "btn small ghost"; b.textContent = "영상 설정";
+      b.onclick = () => { $("videoEditor").classList.toggle("open"); $("vTitle").value = (v && v.title) || ""; $("vUrl").value = (v && v.url) || ""; $("vMsg").textContent = ""; };
+      wrap.appendChild(b);
+    } else $("videoEditor").classList.remove("open");
+  }
+  function renderMine(){
+    const lock = $("mineLocked");
+    const show = which => { $("loginBox").hidden = which !== "login"; $("meBox").hidden = which !== "me"; lock.hidden = which !== "lock"; };
+    if (!configured){ show("lock"); lock.textContent = "Supabase 연결 설정을 마치면 묵상을 남길 수 있어요."; return; }
+    if (!auth){ show("login"); return; }
+    if (!mineLoaded){ show("lock"); lock.textContent = "불러오는 중…"; return; }
+    if (!canWriteDay(sel)){ show("lock"); lock.textContent = `${shortDate(sel)}에 열려요. 그날 말씀을 읽고 묵상을 남겨 주세요.`; return; }
+    show("me");
+    $("meName").textContent = `${auth.name} 님`;
+    const m = mine[sel];
+    if (m && !editing){
+      $("mineView").hidden = false; $("mineForm").hidden = true;
+      $("mineTxt").textContent = m.body; $("mineMeta").textContent = `✦ ${fmtTime(m.created_at)}에 별이 떴어요`;
+    } else {
+      $("mineView").hidden = true; $("mineForm").hidden = false;
+      $("medCancel").hidden = !m;
+      $("medSave").textContent = m ? "고친 묵상 저장" : "✦ 묵상 남기고 별 띄우기";
+      if (formDay !== sel){ $("medText").value = m ? m.body : ""; formDay = sel; $("medMsg").textContent = ""; }
+    }
+  }
+  function renderList(){
+    const L = $("list"); L.innerHTML = "";
+    const rows = dayRows[sel];
+    $("listCount").textContent = rows && rows.length ? `${rows.length}개의 별` : "";
+    if (!rows || !rows.length){
+      const e = document.createElement("div"); e.className = "empty";
+      e.textContent = !configured ? "연결 설정 후에 묵상이 보여요." : !rows ? "불러오는 중…" : sel > T ? "아직 열리지 않은 날이에요." : "아직 나눈 묵상이 없어요. 첫 번째 별을 띄워 주세요.";
+      L.appendChild(e); return;
+    }
+    for (const r of rows){
+      const it = document.createElement("div"); it.className = "item";
+      const av = document.createElement("div");
+      av.style.cssText = "width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:#283060;color:#e9c779;font-weight:700;font-size:14px";
+      av.textContent = (r.name || "?").trim().charAt(0);
+      const body = document.createElement("div"); body.className = "body";
+      const who = document.createElement("div"); who.className = "who"; who.textContent = r.name;
+      if (auth && r.name.toLowerCase() === auth.name.toLowerCase()){ const me=document.createElement("span"); me.className="when"; me.textContent="· 나"; who.appendChild(me); }
+      const when = document.createElement("span"); when.className = "when"; when.textContent = fmtTime(r.created_at) + (r.updated_at && (new Date(r.updated_at) - new Date(r.created_at) > 60000) ? " (고침)" : ""); who.appendChild(when);
+      if (isAdmin){ const del = document.createElement("button"); del.className = "del"; del.textContent = "삭제"; del.onclick = () => armThen(del, () => adminDelete(r.id)); who.appendChild(del); }
+      const txt = document.createElement("div"); txt.className = "txt"; txt.textContent = r.body;
+      body.append(who, txt); it.append(av, body); L.appendChild(it);
+    }
+  }
+  function armThen(btn, fn){
+    if (btn.dataset.armed){ fn(); return; }
+    const orig = btn.textContent; btn.dataset.armed = "1"; btn.textContent = "한 번 더 누르면 삭제돼요";
+    setTimeout(() => { if (btn.isConnected){ delete btn.dataset.armed; btn.textContent = orig; } }, 4000);
+  }
+  function renderNav(){ $("navCnt").textContent = auth ? `✦ ${Object.keys(mine).length}` : ""; }
+  function renderAdmin(){
+    $("adminLogin").hidden = isAdmin; $("adminTools").hidden = !isAdmin;
+  }
+  function renderToday(){ renderBanner(); renderStrip(); renderHero(); renderVideo(); renderMine(); renderList(); renderNav(); renderAdmin(); }
+  function renderAll(){ renderToday(); if (location.hash === "#sky") renderSky(); route(); }
+
+  // ---------- 그리기: 밤하늘 ----------
+  function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const R = rng(20261122);
+  const BG = Array.from({length:190}, () => ({x:R()*1000, y:R()*720, r: R()<.85 ? .5+R()*.9 : 1.3+R()*.8, d:(R()*5).toFixed(2), o:.3+R()*.6}));
+  const POS = Array.from({length:TOTAL}, (_,i) => {
+    const t = i*0.6 + 0.3, r = 48 + i*12.4;
+    return { x: 500 + Math.cos(t)*r*1.32 + (R()-.5)*22, y: 365 + Math.sin(t)*r*0.8 + (R()-.5)*18 };
+  });
+  const NS = "http://www.w3.org/2000/svg";
+  const sv = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const sparkle = s => `M0,${-s} Q${s*.13},${-s*.13} ${s},0 Q${s*.13},${s*.13} 0,${s} Q${-s*.13},${s*.13} ${-s},0 Q${-s*.13},${-s*.13} 0,${-s}Z`;
+
+  function renderSky(){
+    const svg = $("sky"); svg.innerHTML = "";
+    const lit = new Set(Object.keys(mine).map(Number).filter(n => n>=1 && n<=TOTAL));
+    const n = lit.size, complete = n >= TOTAL;
+    $("skyN").textContent = n; $("prog").style.width = (n/TOTAL*100) + "%";
+    $("skywrap").classList.toggle("complete", complete); $("finale").hidden = !complete;
+
+    const defs = sv("defs", {});
+    defs.innerHTML = `
+      <radialGradient id="glow"><stop offset="0" stop-color="#fff3c9" stop-opacity=".95"/><stop offset=".35" stop-color="#e9c779" stop-opacity=".45"/><stop offset="1" stop-color="#e9c779" stop-opacity="0"/></radialGradient>
+      <radialGradient id="milk" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#8a8fd6" stop-opacity=".35"/><stop offset=".6" stop-color="#5a5fa8" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+      <linearGradient id="trail" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".9"/></linearGradient>`;
+    svg.appendChild(defs);
+    svg.appendChild(sv("ellipse",{class:"milky",cx:500,cy:365,rx:520,ry:170,fill:"url(#milk)",transform:"rotate(-18 500 365)"}));
+    const moon = sv("g",{transform:"translate(890 92)"});
+    moon.appendChild(sv("circle",{r:34,fill:"url(#glow)",opacity:.35}));
+    moon.appendChild(sv("path",{d:"M6,-20 A21,21 0 1,0 6,20 A16,16 0 1,1 6,-20Z",fill:"#f6ecd0",opacity:.9}));
+    svg.appendChild(moon);
+    const bg = sv("g",{});
+    for (const s of BG){
+      const c = sv("circle",{cx:s.x.toFixed(1),cy:s.y.toFixed(1),r:s.r.toFixed(2),fill:"#fff",opacity:s.o.toFixed(2)});
+      if (s.r > 1){ c.setAttribute("class","tw"); c.style.animationDelay = s.d+"s"; }
+      bg.appendChild(c);
+    }
+    svg.appendChild(bg);
+    const sh = sv("g",{class:"shoot"});
+    sh.appendChild(sv("line",{x1:760,y1:40,x2:860,y2:-18,stroke:"url(#trail)","stroke-width":2,"stroke-linecap":"round",transform:"rotate(180 810 11)"}));
+    svg.appendChild(sh);
+    const lines = sv("g",{stroke:"#e9c779","stroke-opacity":.28,"stroke-width":1});
+    for (let d=1; d<TOTAL; d++) if (lit.has(d) && lit.has(d+1)){ const a=POS[d-1], b=POS[d]; lines.appendChild(sv("line",{x1:a.x,y1:a.y,x2:b.x,y2:b.y})); }
+    svg.appendChild(lines);
+    for (let d=1; d<=TOTAL; d++){
+      const p = POS[d-1];
+      if (lit.has(d)){
+        const size = 9 + (d%4)*1.6;
+        const g = sv("g",{class:"lit"+(d===bornDay?" born":""),transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`,tabindex:0,role:"button","aria-label":`${d}장 묵상`});
+        g.appendChild(sv("circle",{class:"halo",r:size*2.6,fill:"url(#glow)",opacity:.6}));
+        const core = sv("g",{class:"core"}); core.style.animationDelay = (d*0.37%3.5).toFixed(2)+"s";
+        core.appendChild(sv("path",{d:sparkle(size),fill:"#fff6da"}));
+        core.appendChild(sv("circle",{r:size*.22,fill:"#fff"}));
+        g.appendChild(core);
+        if (skySel === d) g.appendChild(sv("circle",{r:size*1.9,fill:"none",stroke:"#f7e2a8","stroke-opacity":.7,"stroke-width":1}));
+        const lab = sv("text",{y:size*2.2+8,"text-anchor":"middle","font-size":11,fill:"#f3ead7","fill-opacity":.55,"font-family":"Noto Sans KR"});
+        lab.textContent = d; g.appendChild(lab);
+        g.addEventListener("click", () => { skySel = d; renderSky(); });
+        g.addEventListener("keydown", e => { if (e.key === "Enter"){ skySel = d; renderSky(); } });
+        svg.appendChild(g);
+      } else {
+        const g = sv("g",{transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`});
+        g.appendChild(sv("circle",{r:1.6,fill:"#fff",opacity:.25}));
+        g.appendChild(sv("circle",{r:6,fill:"none",stroke:"#fff","stroke-opacity":.08,"stroke-dasharray":"2 3"}));
+        svg.appendChild(g);
+      }
+    }
+    if (bornDay) setTimeout(() => { bornDay = null; }, 2000);
+    renderDetail();
+  }
+  function renderDetail(){
+    const box = $("detail"); box.innerHTML = "";
+    const empty = t => { const e = document.createElement("div"); e.className = "empty"; e.textContent = t; box.appendChild(e); };
+    if (!auth){ empty("‘오늘의 말씀’에서 이름과 비밀번호로 들어오면 나만의 밤하늘이 생겨요."); return; }
+    const e = skySel && mine[skySel];
+    if (!e){ empty(Object.keys(mine).length ? "빛나는 별을 누르면 그날의 묵상을 다시 볼 수 있어요." : "아직 하늘이 비어 있어요. 오늘의 말씀을 읽고 첫 묵상을 남기면 첫 번째 별이 떠요."); return; }
+    const c = document.createElement("div"); c.className = "ch"; c.textContent = `DAY ${skySel} · ${dateLabel(skySel)}`;
+    const h = document.createElement("h3"); h.textContent = `누가복음 ${skySel}장 — ${CH[skySel-1]}`;
+    const t = document.createElement("div"); t.style.whiteSpace = "pre-wrap"; t.textContent = e.body;
+    const m = document.createElement("div"); m.className = "hint"; m.style.marginTop = "10px"; m.textContent = `✦ ${fmtTime(e.created_at)}`;
+    box.append(c, h, t, m);
+  }
+
+  // ---------- 동작 ----------
+  let toastTimer;
+  function toast(html){ const t = $("toast"); t.innerHTML = html; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 3800); }
+
+  $("lgGo").onclick = async () => {
+    const name = $("lgName").value.trim(), pin = $("lgPin").value.trim(), msg = $("lgMsg");
+    msg.className = "msg err";
+    if (!name){ msg.textContent = ERR.bad_name; return; }
+    if (!/^[0-9]{4,8}$/.test(pin)){ msg.textContent = ERR.bad_pin; return; }
+    $("lgGo").disabled = true; msg.textContent = "";
+    try {
+      const r = await rpc("login", { p_name: name, p_pin: pin });
+      if (!r.ok){ msg.textContent = errMsg(r.error) + (r.error === "wrong_pin" ? " (이미 누군가 쓰는 이름일 수도 있어요)" : ""); return; }
+      auth = { name: r.name, pin }; store.set("luke_auth", auth);
+      $("lgPin").value = ""; msg.textContent = "";
+      toast(r.created ? `환영해요, ${escapeHtml(r.name)} 님! 이제 묵상을 남겨 보세요` : `다시 만나서 반가워요, ${escapeHtml(r.name)} 님`);
+      await loadMine();
+    } catch(e){ msg.textContent = errMsg(); }
+    finally { $("lgGo").disabled = false; }
+  };
+  $("lgPin").addEventListener("keydown", e => { if (e.key === "Enter") $("lgGo").click(); });
+  $("logout").onclick = logout;
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+  let saving = false;
+  $("medSave").onclick = async () => {
+    if (saving || !auth) return;
+    const text = $("medText").value.trim(), msg = $("medMsg");
+    if (!text){ msg.className = "msg err"; msg.textContent = "묵상을 한 줄이라도 적어 주세요."; return; }
+    const day = sel;
+    saving = true; $("medSave").disabled = true; msg.textContent = "";
+    try {
+      const r = await rpc("save_meditation", { p_name: auth.name, p_pin: auth.pin, p_day: day, p_body: text });
+      if (!r.ok){ msg.className = "msg err"; msg.textContent = errMsg(r.error); if (r.error === "wrong_pin" || r.error === "no_user") logout(); return; }
+      mine[day] = { day, body: text, created_at: (mine[day] && mine[day].created_at) || new Date().toISOString() };
+      editing = false; formDay = null;
+      if (r.created){ bornDay = day; skySel = day; toast(`✦ 밤하늘에 별이 하나 떴어요 <a href="#sky">보러 가기</a>`); }
+      else toast("묵상을 고쳐 저장했어요");
+      renderAll(); loadDay(day);
+    } catch(e){ msg.className = "msg err"; msg.textContent = errMsg(); }
+    finally { saving = false; $("medSave").disabled = false; }
+  };
+  $("mineEdit").onclick = () => { editing = true; formDay = null; renderMine(); $("medText").focus(); };
+  $("medCancel").onclick = () => { editing = false; formDay = null; renderMine(); };
+  $("mineDel").onclick = () => armThen($("mineDel"), async () => {
+    const day = sel;
+    try {
+      const r = await rpc("delete_meditation", { p_name: auth.name, p_pin: auth.pin, p_day: day });
+      if (!r.ok){ toast(errMsg(r.error)); return; }
+      delete mine[day]; editing = false; formDay = null; toast("묵상을 지웠어요"); renderAll(); loadDay(day);
+    } catch(_){ toast(errMsg()); }
+  });
+
+  // 관리자
+  async function enterAdmin(pw){
+    try { isAdmin = !!(await rpc("admin_check", { p_admin: pw })); } catch(_){ isAdmin = false; }
+    if (isAdmin){ adminPw = pw; store.set("luke_admin", pw, true); }
+    else { store.del("luke_admin", true); adminPw = null; }
+    renderAll(); return isAdmin;
+  }
+  $("adminIn").onclick = async () => {
+    const ok = await enterAdmin($("adminPw").value);
+    $("adminPw").value = "";
+    if (!ok){ $("adminMsg").className = "msg err"; $("adminMsg").textContent = ERR.not_admin; $("adminLogin").after($("adminMsg")); }
+    else { $("adminTools").appendChild($("adminMsg")); $("adminMsg").textContent = ""; }
+  };
+  $("adminPw").addEventListener("keydown", e => { if (e.key === "Enter") $("adminIn").click(); });
+  $("adminOut").onclick = () => { isAdmin = false; adminPw = null; store.del("luke_admin", true); location.hash = "#today"; renderAll(); };
+  $("rsGo").onclick = async () => {
+    const m = $("adminMsg");
+    try {
+      const r = await rpc("admin_reset_pin", { p_admin: adminPw, p_name: $("rsName").value, p_new_pin: $("rsPin").value.trim() });
+      m.className = r.ok ? "msg ok" : "msg err"; m.textContent = r.ok ? "비밀번호를 바꿨어요. 새 비밀번호를 본인에게 알려 주세요." : errMsg(r.error);
+      if (r.ok){ $("rsName").value = ""; $("rsPin").value = ""; }
+    } catch(_){ m.className = "msg err"; m.textContent = errMsg(); }
+  };
+  async function adminDelete(id){
+    try { const r = await rpc("admin_delete_meditation", { p_admin: adminPw, p_id: id }); if (!r.ok){ toast(errMsg(r.error)); return; } toast("삭제했어요"); loadDay(sel); }
+    catch(_){ toast(errMsg()); }
+  }
+  $("vSave").onclick = async () => {
+    const m = $("vMsg"), url = $("vUrl").value.trim();
+    if (!/^https?:\/\//i.test(url)){ m.className = "msg err"; m.textContent = ERR.bad_url; return; }
+    try {
+      const r = await rpc("admin_set_video", { p_admin: adminPw, p_day: sel, p_title: $("vTitle").value.trim(), p_url: url });
+      m.className = r.ok ? "msg ok" : "msg err"; m.textContent = r.ok ? `${sel}장 영상을 저장했어요.` : errMsg(r.error);
+      if (r.ok){ await loadVideos(); $("videoEditor").classList.add("open"); }
+    } catch(_){ m.className = "msg err"; m.textContent = errMsg(); }
+  };
+  $("vClear").onclick = async () => {
+    const m = $("vMsg");
+    try {
+      const r = await rpc("admin_clear_video", { p_admin: adminPw, p_day: sel });
+      m.className = r.ok ? "msg ok" : "msg err"; m.textContent = r.ok ? "지웠어요." : errMsg(r.error);
+      if (r.ok){ await loadVideos(); $("videoEditor").classList.add("open"); }
+    } catch(_){ m.className = "msg err"; m.textContent = errMsg(); }
+  };
+
+  // 자정(한국 시간)이 지나면 새 장으로, 다시 화면에 돌아오면 새 묵상 불러오기
+  setInterval(() => { const n = todayN(); if (n !== T){ const wasToday = sel === Math.min(Math.max(T,1),TOTAL); T = n; if (wasToday) sel = Math.min(Math.max(T,1),TOTAL); renderAll(); loadDay(sel); loadVideos(); } }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && sb){ loadDay(sel); loadVideos(); } });
+  setInterval(() => { if (!document.hidden && sb) loadDay(sel); }, 60000);
+
+  // ---------- 시작 ----------
+  renderAll(); route();
+  if (!sb){ $("status").textContent = configured ? "Supabase 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요." : ""; }
+  else {
+    (async () => {
+      if (adminPw) await enterAdmin(adminPw);
+      loadVideos(); loadDay(sel); loadMine();
+    })();
+  }
+})();
+</script>
+</body>
+</html>
