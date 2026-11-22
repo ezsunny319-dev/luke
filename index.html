@@ -152,11 +152,14 @@
   .note{font-size:13px;color:var(--ink3);text-align:center;margin-top:28px}
   [hidden]{display:none!important}
 
+  .hero-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .scripture .word-head{display:flex;align-items:baseline;gap:8px;margin:22px 0 14px;padding-top:20px;border-top:1px solid var(--line);font-family:"Gowun Batang",serif;font-size:17px}
+  .scripture .word-head .muted{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:var(--ink3)}
   .scripture .verses{font-family:"Gowun Batang",serif;font-size:var(--vfs,18px);line-height:1.95;position:relative;overflow:hidden}
   .scripture .verses p{margin:0 0 .55em}
   .scripture .verses sup{font-family:"Noto Sans KR",sans-serif;font-size:.62em;color:var(--gold);margin-right:.4em;vertical-align:.35em;font-weight:500}
   .scripture .verses.clip{max-height:21em}
-  .scripture .verses.clip::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5em;background:linear-gradient(transparent,#141a35)}
+  .scripture .verses.clip::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5em;background:linear-gradient(rgba(20,26,53,0),#151a36)}
   .scripture .more{text-align:center;margin-top:12px}
   .scripture .fs{display:inline-flex;gap:6px}
   .vtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -225,18 +228,15 @@
   <section id="viewToday">
     <div class="strip" id="strip"></div>
 
-    <div class="card hero">
+    <div class="card hero scripture">
       <div class="date" id="heroDate"></div>
       <h2 id="heroTitle">누가복음 1장</h2>
       <p class="sub serif" id="heroSub"></p>
-      <a class="btn" id="readLink" href="#" target="_blank" rel="noopener">📖 개역개정으로 보기</a>
-    </div>
-
-    <div class="card scripture">
-      <div class="sec-title" style="justify-content:space-between">
-        <span>오늘의 말씀 <span class="muted">우리말성경</span></span>
+      <div class="hero-actions">
+        <a class="btn" id="readLink" href="#" target="_blank" rel="noopener">📖 개역개정으로 보기</a>
         <span class="fs"><button class="btn small ghost" id="fsDown" aria-label="글자 작게">가−</button><button class="btn small ghost" id="fsUp" aria-label="글자 크게">가+</button></span>
       </div>
+      <div class="word-head"><span>오늘의 말씀</span><span class="muted">우리말성경</span></div>
       <div class="verses" id="verses"></div>
       <div class="more"><button class="btn" id="versesToggle"></button></div>
     </div>
