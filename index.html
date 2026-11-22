@@ -302,7 +302,7 @@ const SUPABASE_KEY = "sb_publishable_-nk-6HoHB2Mi4t85PDbenA_r83X2NsJ";
 
 /* ② 읽기 일정 — 1장은 시작일, 2장부터는 평일(월~금)마다 한 장.
    바꾸면 supabase.sql 의 opened_count() 날짜도 같이 바꿔 주세요. */
-const START = [2026, 11, 22];
+const START = [2026, 11, 23];
 
 (() => {
   const TOTAL = 24;
@@ -574,13 +574,6 @@ const START = [2026, 11, 22];
     moon.appendChild(sv("circle",{r:34,fill:"url(#glow)",opacity:.35}));
     moon.appendChild(sv("path",{d:"M6,-20 A21,21 0 1,0 6,20 A16,16 0 1,1 6,-20Z",fill:"#f6ecd0",opacity:.9}));
     svg.appendChild(moon);
-    const bg = sv("g",{});
-    for (const s of BG){
-      const c = sv("circle",{cx:s.x.toFixed(1),cy:s.y.toFixed(1),r:s.r.toFixed(2),fill:"#fff",opacity:s.o.toFixed(2)});
-      if (s.r > 1){ c.setAttribute("class","tw"); c.style.animationDelay = s.d+"s"; }
-      bg.appendChild(c);
-    }
-    svg.appendChild(bg);
     const sh = sv("g",{class:"shoot"});
     sh.appendChild(sv("line",{x1:760,y1:40,x2:860,y2:-18,stroke:"url(#trail)","stroke-width":2,"stroke-linecap":"round",transform:"rotate(180 810 11)"}));
     svg.appendChild(sh);
@@ -637,12 +630,16 @@ const START = [2026, 11, 22];
         g.addEventListener("click", pick);
         g.addEventListener("keydown", e => { if (e.key === "Enter") pick(); });
         svg.appendChild(g);
-      } else {
-        const g = sv("g",{transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`});
-        g.appendChild(sv("circle",{r:1.6,fill:"#fff",opacity:.25}));
-        g.appendChild(sv("circle",{r:6,fill:"none",stroke:"#fff","stroke-opacity":.08,"stroke-dasharray":"2 3"}));
-        svg.appendChild(g);
       }
+    }
+    // 아직 아무 별도 없을 때: 빈 하늘에 안내 문구
+    const shownOthers = showOthers ? others.length : 0;
+    if (lit.size === 0 && shownOthers === 0){
+      const t1 = sv("text",{x:500,y:350,"text-anchor":"middle","font-size":20,fill:"#f3ead7","fill-opacity":.55,"font-family":"Gowun Batang, serif"});
+      t1.textContent = "아직 비어 있는 하늘";
+      const t2 = sv("text",{x:500,y:382,"text-anchor":"middle","font-size":14,fill:"#f3ead7","fill-opacity":.35,"font-family":"Noto Sans KR"});
+      t2.textContent = "묵상이 하나 올라올 때마다 별이 하나씩 떠요";
+      svg.append(t1, t2);
     }
     if (bornDay) setTimeout(() => { bornDay = null; }, 2000);
     renderDetail();
